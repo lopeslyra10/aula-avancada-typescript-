@@ -1,20 +1,33 @@
 import { Carro } from "./interface/Carro";
 import { Moto } from "./interface/Moto";
-const meuCarro: Carro = {
-    marca: "Toyota",
-    modelo: "Corolla",
-    ano: 2022,
-    portas: 4,
-    acelerar: () => "O carro está acelerando!"
-};
-const minhaMoto: Moto = {
-    marca: "Honda",
-    modelo: "CB 500",
-    ano: 2021,
-    cilindradas: 500,
-    acelerar: () => "A moto está acelerando!"
-};
-console.log("Carro:", meuCarro);
-console.log(meuCarro.acelerar());
-console.log("Moto:", minhaMoto);
-console.log(minhaMoto.acelerar());
+import { GerenciadorVeiculos } from "./classes/GerenciadorVeiculos";
+import { EstoqueVeiculos } from "./classes/EstoqueVeiculos";
+import { filtrarPorAno, filtrarPorMarca } from "./classes/FiltroVeiculos";
+import { gerarRelatorio } from "./utils/RelatorioVeiculos";
+
+const gerenciadorCarros = new GerenciadorVeiculos<Carro>();
+const gerenciadorMotos = new GerenciadorVeiculos<Moto>();
+
+const carro1: Carro = { marca: "Toyota", modelo: "Corolla", ano: 2022, portas: 4, acelerar: () => "O carro está acelerando!" };
+const carro2: Carro = { marca: "Ford", modelo: "Fiesta", ano: 2021, portas: 4, acelerar: () => "O carro está acelerando!" };
+const moto1: Moto = { marca: "Honda", modelo: "CB 500", ano: 2021, cilindradas: 500, acelerar: () => "A moto está acelerando!" };
+
+gerenciadorCarros.adicionar(carro1);
+gerenciadorCarros.adicionar(carro2);
+gerenciadorMotos.adicionar(moto1);
+
+const estoque = new EstoqueVeiculos();
+estoque.adicionarEstoque("Corolla", 10);
+estoque.adicionarEstoque("Fiesta", 5);
+estoque.removerEstoque("Fiesta");
+
+console.log("Estoque Corolla:", estoque.consultarEstoque("Corolla"));
+console.log("Estoque Fiesta:", estoque.consultarEstoque("Fiesta"));
+
+const todosVeiculos = [...gerenciadorCarros.listarVeiculos(), ...gerenciadorMotos.listarVeiculos()];
+console.log("Veículos de 2021:", filtrarPorAno(todosVeiculos, 2021));
+console.log("Veículos da marca Honda:", filtrarPorMarca(todosVeiculos, "Honda"));
+
+
+console.log("\nRelatório de Veículos:");
+console.log(gerarRelatorio(todosVeiculos));
